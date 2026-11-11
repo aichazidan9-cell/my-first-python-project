@@ -1,0 +1,100 @@
+# تطبيق إدارة المصروف - My Expense Tracker
+# مشروع شخصي من تطوير عائشة
+# يساعدك تعرف وين راحو دراهمك كل شهر
+
+import json
+import os
+from datetime import datetime
+
+FILE_NAME = "data.json"
+
+def load_data():
+    if not os.path.exists(FILE_NAME):
+        return []
+    try:
+        with open(FILE_NAME, "r", encoding="utf-8") as f:
+            return json.load(f)
+    except:
+        return []
+
+def save_data(expenses):
+    with open(FILE_NAME, "w", encoding="utf-8") as f:
+        json.dump(expenses, f, ensure_ascii=False, indent=2)
+
+def add_expense(expenses):
+    print("\n--- أضف مصروف جديد ---")
+    name = input("واش شريتي؟ مثال: خبز، كوسمتيك، نقل: ")
+    try:
+        amount = float(input("شحال خلصتي؟ (بالدينار): "))
+    except:
+        print("لازم تكتبي رقم!")
+        return
+    category = input("التصنيف (أكل / نقل / قراية / ترفيه / اخرى): ")
+    date = datetime.now().strftime("%Y-%m-%d %H:%M")
+    expenses.append({"name": name, "amount": amount, "category": category, "date": date})
+    save_data(expenses)
+    print("✅ تمت الإضافة بنجاح!")
+
+def show_expenses(expenses):
+    print("\n--- قائمة مصاريفك ---")
+    if not expenses:
+        print("مازال ما صرفتي والو، راكي شاطرة!")
+        return
+    total = 0
+    for i, e in enumerate(expenses, 1):
+        print(f"{i}. {e['name']} - {e['amount']} دج - {e['category']} - {e['date']}")
+        total += e['amount']
+    print(f"\nالمجموع الكلي: {total} دج")
+
+def show_by_category(expenses):
+    print("\n--- المصروف حسب التصنيف ---")
+    totals = {}
+    for e in expenses:
+        totals[e['category']] = totals.get(e['category'], 0) + e['amount']
+    for cat, total in totals.items():
+        print(f"{cat}: {total} دج")
+    if not totals:
+        print("ماكاش بيانات")
+
+def delete_expense(expenses):
+    show_expenses(expenses)
+    try:
+        num = int(input("\nواش من رقم تحبي تمحي؟ "))
+        if 1 <= num <= len(expenses):
+            removed = expenses.pop(num - 1)
+            save_data(expenses)
+            print(f"تم مسح: {removed['name']}")
+        else:
+            print("الرقم غالط")
+    except:
+        print("لازم تكتبي رقم")
+
+def main():
+    expenses = load_data()
+    print("=================================")
+    print("  أهلا بيك في تطبيق المصروف 💰")
+    print("  تاع عائشة - My Expense Tracker")
+    print("=================================")
+    while True:
+        print("\n1. أضف مصروف جديد")
+        print("2. شوف كل مصاريفك")
+        print("3. شوف المصروف حسب التصنيف")
+        print("4. امسح مصروف")
+        print("5. خروج")
+        choice = input("\nخيري رقم (1-5): ")
+        if choice == "1":
+            add_expense(expenses)
+        elif choice == "2":
+            show_expenses(expenses)
+        elif choice == "3":
+            show_by_category(expenses)
+        elif choice == "4":
+            delete_expense(expenses)
+        elif choice == "5":
+            print("باي باي! حافظي على دراهمك 😉")
+            break
+        else:
+            print("خيري رقم من 1 حتى 5")
+
+if __name__ == "__main__":
+    main()
