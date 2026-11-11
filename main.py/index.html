@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<title>لعبة خمن الرقم</title>
+<style>
+body { font-family: Arial; text-align: center; background: #f0f0f0; padding: 20px; }
+.box { background: white; padding: 20px; border-radius: 15px; max-width: 350px; margin: auto; }
+input { padding: 10px; font-size: 20px; width: 80px; text-align: center; }
+button { padding: 10px 20px; font-size: 18px; background: #4CAF50; color: white; border: none; border-radius: 10px; margin-top: 10px; }
+#msg { font-size: 20px; margin-top: 15px; font-weight: bold; }
+</style>
+</head>
+<body>
+<div class="box">
+<h2>🎮 لعبة خمن الرقم</h2>
+<p>خمني الرقم بين 1 و 10</p>
+<input type="number" id="guess" placeholder="؟">
+<br>
+<button onclick="check()">جربي</button>
+<p id="msg"></p>
+<p id="tries"></p>
+</div>
+
+<script>
+let secret = Math.floor(Math.random() * 10) + 1;
+let count = 0;
+function check() {
+  let g = document.getElementById("guess").value;
+  count++;
+  if (g < secret) {
+    document.getElementById("msg").innerText = "اطلعي شوية! الرقم اكبر ⬆️";
+  } else if (g > secret) {
+    document.getElementById("msg").innerText = "اهبطي شوية! الرقم اصغر ⬇️";
+  } else {
+    document.getElementById("msg").innerText = "صحيتييي! لقيتيه! 🎉";
+    document.getElementById("tries").innerText = "لقيتيه في " + count + " محاولات";
+  }
+}
+</script>
+</body>
+</html>
